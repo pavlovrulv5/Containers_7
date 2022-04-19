@@ -1,0 +1,45 @@
+Экспортируем настройки кластера для подключения
+
+$ export KUBECONFIG="c:\work\_software\cfg\kubernetes-cluster-2485_kubeconfig.yaml
+------------------------
+
+Проверяем подключение
+------------------------
+
+Разворачиваем абстракции
+$ kubectl apply -f configmap.yaml
+configmap/prometheus-config created
+
+$ kubectl apply -f serviceaccount.yaml
+serviceaccount/prometheus created
+
+$ kubectl apply -f clusterrole.yaml
+Warning: rbac.authorization.k8s.io/v1beta1 ClusterRole is deprecated in v1.17+, unavailable in v1.22+; use rbac.authorization.k8s.io/v1 ClusterRole
+clusterrole.rbac.authorization.k8s.io/prometheus created
+
+$ kubectl apply -f clusterrolebinding.yaml
+Warning: rbac.authorization.k8s.io/v1beta1 ClusterRoleBinding is deprecated in v1.17+, unavailable in v1.22+; use rbac.authorization.k8s.io/v1 ClusterRoleBinding
+clusterrolebinding.rbac.authorization.k8s.io/prometheus created
+
+$ kubectl apply -f statefulset.yaml
+statefulset.apps/prometheus created
+
+$ kubectl apply -f service.yaml
+service/prometheus created
+
+$ kubectl apply -f ingress.yaml
+Warning: extensions/v1beta1 Ingress is deprecated in v1.14+, unavailable in v1.22+; use networking.k8s.io/v1 Ingress
+ingress.extensions/prometheus created
+
+$ kubectl create -f daemonset.yaml
+daemonset.apps/node-exporter created
+-------------------
+
+Проверяем POD'ы
+-----------------
+Ищем внешний IP для доступа к веб-интерфейсу Prometheus
+---------------
+Открываем в браузере адрес
+открываем Status -> Targets, видим все ноды кластера, которые Prometheus смог определить и собирает с ним метрики.
+-------------
+На вкладке Graph выполняем запрос node_load1 - это минутный Load Average для каждой из нод в кластере.
